@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>A Special Message</title>
+    <title>A Special Surprise</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -11,7 +11,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
     <style>
-        /* Importing Lemon Milk to match your letter */
         @font-face {
             font-family: 'Lemon Milk';
             src: url('https://db.onlinewebfonts.com/t/718a746f364746864115f5d625d911b3.woff2') format('woff2');
@@ -19,8 +18,10 @@
 
         :root {
             --bg-gradient: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
-            --accent-blue: #0ea5e9;
-            --deep-blue: #0c4a6e;
+            --env-front: #7dd3fc;
+            --env-back: #38bdf8;
+            --env-flap: #0ea5e9;
+            --seal-blue: #1d4ed8;
         }
 
         body {
@@ -32,332 +33,272 @@
             font-family: 'Inter', sans-serif;
             margin: 0;
             overflow: hidden;
+            perspective: 1200px;
         }
 
-        /* Ambient Sparkles matching your letter's style */
-        .sparkle-bg {
+        /* --- Envelope Styles --- */
+        .envelope-wrapper {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            transform-style: preserve-3d;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .envelope-back {
             position: absolute;
-            pointer-events: none;
-            z-index: 1;
+            width: 100%;
+            height: 100%;
+            background: var(--env-back);
+            border-radius: 12px;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.1);
         }
 
+        .envelope-front {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: var(--env-front);
+            border-radius: 0 0 12px 12px;
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 0 0, 50% 50%, 0 0);
+            z-index: 3;
+        }
+
+        .flap {
+            position: absolute;
+            top: 0;
+            width: 0;
+            height: 0;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-top: 110px solid var(--env-flap);
+            transform-origin: top;
+            transition: transform 0.6s ease;
+            z-index: 4;
+        }
+
+        .seal {
+            position: absolute;
+            top: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 44px;
+            height: 44px;
+            background: var(--seal-blue);
+            border-radius: 50%;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .open .flap { transform: rotateX(180deg); z-index: 0; }
+        .open .seal { opacity: 0; }
+
+        /* --- Question Card --- */
         .glass-card {
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 40px;
-            padding: 50px 30px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(15px);
+            border-radius: 30px;
+            padding: 40px 20px;
             width: 90%;
             max-width: 400px;
             text-align: center;
-            box-shadow: 0 30px 60px rgba(12, 74, 110, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.7);
-            z-index: 10;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+            display: none; /* Shown after envelope */
         }
 
         .main-title {
             font-family: 'Lemon Milk', sans-serif;
-            color: var(--deep-blue);
-            text-shadow: 2px 4px 8px rgba(12, 74, 110, 0.1);
-            letter-spacing: 1px;
+            color: #0c4a6e;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.05);
         }
 
         .meme-box {
-            width: 170px;
-            height: 170px;
-            margin: 0 auto 30px;
-            border-radius: 35px;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px;
+            border-radius: 20px;
             overflow: hidden;
-            border: 6px solid white;
-            box-shadow: 0 15px 35px rgba(12, 74, 110, 0.1);
-            background: white;
+            border: 4px solid white;
+            background: #eee;
         }
 
         .btn-yes {
-            background: var(--accent-blue);
+            background: #0ea5e9;
             color: white;
-            padding: 16px 45px;
+            padding: 12px 35px;
             border-radius: 50px;
             font-family: 'Lemon Milk', sans-serif;
-            font-size: 0.85rem;
-            letter-spacing: 0.1em;
-            box-shadow: 0 10px 25px rgba(14, 165, 233, 0.3);
-            border: none;
-            cursor: pointer;
-            transition: transform 0.1s;
+            font-size: 0.8rem;
+            box-shadow: 0 8px 20px rgba(14, 165, 233, 0.3);
         }
 
         .btn-no {
             background: white;
             color: #64748b;
-            padding: 14px 28px;
+            padding: 10px 25px;
             border-radius: 50px;
             font-family: 'Lemon Milk', sans-serif;
-            font-size: 0.75rem;
-            border: 1px solid rgba(14, 165, 233, 0.1);
-            cursor: pointer;
+            font-size: 0.7rem;
+            border: 1px solid #e2e8f0;
+            z-index: 1000;
         }
 
-        .progress-bar {
-            background: rgba(14, 165, 233, 0.1);
-            height: 6px;
-            border-radius: 10px;
-        }
-
-        .floating-heart {
-            position: fixed;
+        .sparkle-bg {
+            position: absolute;
             pointer-events: none;
-            z-index: 100;
+            z-index: 1;
         }
-
-
-#loading-screen {
-  position: fixed;
-  inset: 0;
-  background: #e0f2fe;
-  z-index: 100;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  transition: opacity 1s ease-out;
-}
-
-.loader-container {
-  position: relative;
-  width: 200px;
-  height: 200px;
-}
-
-.playing-butterfly {
-  position: absolute;
-  width: 40px;
-  height: 30px;
-  top: 50%;
-  left: 50%;
-  margin-top: -15px;
-  margin-left: -20px;
-}
-
-.playing-butterfly:nth-child(1) { animation: play1 3s linear infinite; }
-.playing-butterfly:nth-child(2) { animation: play2 3s linear infinite; }
-
-@keyframes play1 {
-  0% { transform: rotate(0deg) translateX(60px) rotate(0deg); }
-  100% { transform: rotate(360deg) translateX(60px) rotate(-360deg); }
-}
-
-@keyframes play2 {
-  0% { transform: rotate(180deg) translateX(60px) rotate(0deg); }
-  100% { transform: rotate(540deg) translateX(60px) rotate(-360deg); }
-}
-
-.wing {
-  position: absolute;
-  width: 20px;
-  height: 25px;
-  background: linear-gradient(to bottom, #60a5fa, #1d4ed8);
-  border-radius: 50% 50% 0 50%;
-  animation: flap 0.3s ease-in-out infinite;
-}
-
-.wing.right { right: 0; border-radius: 50% 50% 50% 0; transform-origin: left; }
-.wing.left { left: 0; transform-origin: right; }
-
-@keyframes flap {
-  0%, 100% { transform: rotateY(0deg); }
-  50% { transform: rotateY(70deg); }
-}
     </style>
 </head>
-
 <body>
-<div id="loading-screen">
-  <div class="loader-container">
-    <div class="playing-butterfly">
-      <div class="wing left"></div>
-      <div class="wing right"></div>
-    </div>
-    <div class="playing-butterfly">
-      <div class="wing left"></div>
-      <div class="wing right"></div>
-    </div>
-  </div>
-    
-  <p class="text-blue-600 font-bold tracking-widest mt-10 animate-pulse">
-    PREPARING YOUR SURPRISE...
-  </p>
-</div>
+
 <div id="sparkle-container"></div>
 
-<div class="glass-card" id="mainCard" style="opacity:0;">
-    <div class="mb-4">
-        <span class="px-4 py-1.5 bg-sky-100 text-sky-600 text-[10px] font-bold uppercase tracking-widest rounded-full border border-sky-200">
-            Special Delivery
-        </span>
-    </div>
-    
+<div id="envelope-container" class="envelope-wrapper" onclick="openEnvelope()">
+    <div class="flap"></div>
+    <div class="seal">💙</div>
+    <div class="envelope-front"></div>
+    <div class="envelope-back"></div>
+    <p class="absolute -bottom-12 w-full text-center font-bold text-sky-700 animate-bounce">
+        Click to open! ✉️
+    </p>
+</div>
+
+<div class="glass-card" id="mainCard">
     <div class="meme-box" id="memeBox">
-        <img id="catMeme" src="https://media.giphy.com/media/CjmvTCZf2U3p09Cn0h/giphy.gif" class="w-full h-full object-cover">
+        <img id="catMeme" src="" class="w-full h-full object-cover">
     </div>
-
-    <h1 id="question" class="main-title text-xl mb-6 min-h-[60px] flex items-center justify-center">
-        Be honest with me...
-    </h1>
+    <h1 id="question" class="main-title text-xl mb-6 min-h-[50px]"></h1>
     
-    <div class="progress-bar w-full overflow-hidden mb-10">
-        <div id="progressFill" class="h-full bg-sky-500 transition-all duration-700 ease-out" style="width: 20%"></div>
-    </div>
-
-    <div class="flex justify-center items-center gap-5 relative h-16" id="controls">
+    <div class="flex justify-center items-center gap-4 relative h-16">
         <button class="btn-yes" onclick="handleYes()" id="yesBtn">Yes</button>
         <button class="btn-no" id="noBtn">No</button>
     </div>
 </div>
 
 <script>
-    // --- 1. Ambient Sparkles (Matching your letter.html logic) ---
-    function createAmbientSparkle() {
-        const container = document.getElementById('sparkle-container');
-        const sparkle = document.createElement('div');
-        const icons = ['✨', '💙', '💧', '💎'];
-        sparkle.className = 'sparkle-bg';
-        sparkle.innerHTML = icons[Math.floor(Math.random() * icons.length)];
-        sparkle.style.left = Math.random() * 100 + 'vw';
-        sparkle.style.top = '110vh';
-        sparkle.style.fontSize = (Math.random() * 15 + 10) + 'px';
-        container.appendChild(sparkle);
+    const flow = [
+        {
+            question: "Be honest with me...",
+            meme: "https://media.giphy.com/media/CjmvTCZf2U3p09Cn0h/giphy.gif",
+            yesText: "Okay!",
+            noText: "No"
+        },
+        {
+            question: "Do you enjoy talking with me? 💙",
+            meme: "https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif",
+            yesText: "I love it",
+            noText: "Not really"
+        },
+        {
+            question: "Do I make you smile sometimes? 😊",
+            meme: "https://media.giphy.com/media/l0HlQ7LRalQqdWfao/giphy.gif",
+            yesText: "All the time",
+            noText: "Rarely"
+        },
+        {
+            question: "Will you be mine? 💖",
+            meme: "https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif",
+            yesText: "YES!",
+            noText: "Wait..."
+        }
+    ];
 
-        gsap.to(sparkle, {
-            y: '-120vh',
-            x: (Math.random() - 0.5) * 100,
-            duration: Math.random() * 3 + 4,
-            ease: "none",
-            onComplete: () => sparkle.remove()
-        });
-    }
-    setInterval(createAmbientSparkle, 700);
-
-    // --- 2. Interaction Logic ---
     let step = 0;
     let yesScale = 1;
-    const questions = [
-        "Be honest with me...",
-        "Do you enjoy talking with me? 💙",
-        "Do I make you smile sometimes? 😊",
-        "Do you feel something special? 💫",
-        "Will you be mine? 💖"
-    ];
-    
-    const memes = [
-    "https://media.giphy.com/media/CjmvTCZf2U3p09Cn0h/giphy.gif", 
-    "https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif", 
-    "https://media.giphy.com/media/l0HlQ7LRalQqdWfao/giphy.gif", 
-    "https://media.giphy.com/media/26ufdipQqU2lhNA4g/giphy.gif",
-    "https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif", 
-    "https://media.giphy.com/media/yFQ0ywscgobJK/giphy.gif" 
-];
 
-    const qText = document.getElementById("question");
-    const memeImg = document.getElementById("catMeme");
-    const noBtn = document.getElementById("noBtn");
-    const yesBtn = document.getElementById("yesBtn");
-    const progressFill = document.getElementById("progressFill");
+    // --- Audio/Visual Effects ---
+    function createSparkle() {
+        const s = document.createElement('div');
+        s.className = 'sparkle-bg';
+        s.innerHTML = ['✨', '💙', '💎'][Math.floor(Math.random()*3)];
+        s.style.left = Math.random() * 100 + 'vw';
+        s.style.top = '110vh';
+        document.getElementById('sparkle-container').appendChild(s);
+        gsap.to(s, { y: '-120vh', x: (Math.random()-0.5)*100, duration: 4+Math.random()*2, onComplete: () => s.remove() });
+    }
+    setInterval(createSparkle, 700);
+
+    // --- Envelope Logic ---
+    function openEnvelope() {
+        const env = document.getElementById('envelope-container');
+        const card = document.getElementById('mainCard');
+        env.classList.add('open');
+        
+        setTimeout(() => {
+            gsap.to(env, { y: -50, opacity: 0, duration: 0.5, onComplete: () => {
+                env.style.display = 'none';
+                card.style.display = 'block';
+                updateContent();
+                gsap.from(card, { scale: 0.8, opacity: 0, duration: 0.8, ease: "back.out(1.7)" });
+            }});
+        }, 800);
+    }
+
+    // --- Content Logic ---
+    function updateContent() {
+        const current = flow[step];
+        document.getElementById("question").innerText = current.question;
+        document.getElementById("catMeme").src = current.meme;
+        document.getElementById("yesBtn").innerText = current.yesText;
+        document.getElementById("noBtn").innerText = current.noText;
+        
+        // Reset "No" button position inside the card
+        gsap.set("#noBtn", { clearProps: "all", position: "relative", left: 0, top: 0 });
+    }
 
     function handleYes() {
-        spawnBurst();
+        confetti({ particleCount: 50, spread: 60, colors: ['#0ea5e9', '#ffffff'] });
         step++;
-
-        if(step < questions.length) {
-            gsap.to(["#question", "#memeBox"], {
-                opacity: 0,
-                scale: 0.9,
-                duration: 0.2,
-                onComplete: () => {
-                    qText.innerText = questions[step];
-                    memeImg.src = memes[step];
-                    progressFill.style.width = ((step + 1) / questions.length) * 100 + "%";
-                    gsap.to(["#question", "#memeBox"], { opacity: 1, scale: 1, duration: 0.4, ease: "back.out" });
-                }
-            });
+        if(step < flow.length) {
+            gsap.to("#mainCard", { scale: 0.95, duration: 0.1, yoyo: true, repeat: 1 });
+            updateContent();
         } else {
-            finishAction();
+            // Final Action: Send to letter.html
+            gsap.to("body", { opacity: 0, duration: 1, onComplete: () => {
+                window.location.href = "letter.html";
+            }});
         }
     }
 
-    function spawnBurst() {
-        const icons = ['💖', '✨', '💙'];
-        for(let i = 0; i < 10; i++) {
-            const h = document.createElement("div");
-            h.className = "floating-heart";
-            h.innerText = icons[Math.floor(Math.random() * icons.length)];
-            document.body.appendChild(h);
-
-            const rect = yesBtn.getBoundingClientRect();
-            gsap.set(h, { x: rect.left + rect.width/2, y: rect.top });
-
-            gsap.to(h, {
-                x: "+=" + (Math.random() - 0.5) * 400,
-                y: "-=" + (Math.random() * 300 + 100),
-                opacity: 0,
-                rotation: Math.random() * 360,
-                duration: 1.5,
-                onComplete: () => h.remove()
-            });
-        }
-    }
-
+    // --- The "No" Button Escape Logic (Strict Boundaries) ---
+    const noBtn = document.getElementById("noBtn");
+    
     function moveNo() {
-        const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - 40) + 20;
-        const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 40) + 20;
-        gsap.to(noBtn, { position: "fixed", left: x, top: y, duration: 0.3 });
+        // Safe padding to ensure button isn't touching the extreme edge
+        const padding = 20; 
         
-        yesScale += 0.18;
-        gsap.to(yesBtn, { scale: yesScale, duration: 0.3, ease: "back.out(2)" });
-    }
-
-    function finishAction() {
-        confetti({
-            particleCount: 150,
-            spread: 70,
-            origin: { y: 0.6 },
-            colors: ['#0ea5e9', '#38bdf8', '#ffffff']
+        // Calculate the maximum allowed positions
+        // window.innerWidth - buttonWidth - padding
+        const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+        const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+        
+        // Random position between padding and max
+        const randomX = Math.max(padding, Math.random() * maxX);
+        const randomY = Math.max(padding, Math.random() * maxY);
+        
+        gsap.to(noBtn, {
+            position: 'fixed',
+            left: randomX,
+            top: randomY,
+            duration: 0.2,
+            ease: "power2.out"
         });
 
-        gsap.to("#controls, .progress-bar", { opacity: 0, duration: 0.5 });
-        
-        qText.innerHTML = "Opening your <br>surprise now... 💌";
-        memeImg.src = memes[5];
-        
-        // Match the fade-out vibe to lead into the letter
-        setTimeout(() => {
-            gsap.to("body", { 
-                opacity: 0, 
-                duration: 1.2, 
-                onComplete: () => {
-                    // This leads to your letter file
-                    window.location.href = "letter.html"; 
-                }
-            });
-        }, 3000);
+        // Make Yes button bigger
+        yesScale += 0.15;
+        gsap.to("#yesBtn", { scale: yesScale, duration: 0.2 });
     }
 
     noBtn.addEventListener("mouseover", moveNo);
     noBtn.addEventListener("touchstart", (e) => { e.preventDefault(); moveNo(); });
-    
-window.onload = () => {
-  const loader = document.getElementById('loading-screen');
-  const card = document.getElementById('mainCard');
 
-  setTimeout(() => {
-    loader.style.opacity = '0';
-
-    setTimeout(() => {
-      loader.style.display = 'none';
-      gsap.to(card, { opacity: 1, y: 0, duration: 1, ease: "power3.out" });
-    }, 1000);
-  }, 3000);
-};
 </script>
 
 </body>
