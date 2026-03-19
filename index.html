@@ -8,10 +8,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
     <style>
-        /* Importing Lemon Milk to match your letter */
         @font-face {
             font-family: 'Lemon Milk';
             src: url('https://db.onlinewebfonts.com/t/718a746f364746864115f5d625d911b3.woff2') format('woff2');
@@ -34,165 +33,108 @@
             overflow: hidden;
         }
 
-        /* Ambient Sparkles matching your letter's style */
-        .sparkle-bg {
-            position: absolute;
-            pointer-events: none;
-            z-index: 1;
-        }
+        .sparkle-bg { position: absolute; pointer-events: none; z-index: 1; }
 
         .glass-card {
             background: rgba(255, 255, 255, 0.6);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border-radius: 40px;
-            padding: 50px 30px;
+            padding: 40px 20px;
             width: 90%;
             max-width: 400px;
             text-align: center;
             box-shadow: 0 30px 60px rgba(12, 74, 110, 0.15);
             border: 1px solid rgba(255, 255, 255, 0.7);
             z-index: 10;
+            visibility: hidden;
         }
 
         .main-title {
             font-family: 'Lemon Milk', sans-serif;
             color: var(--deep-blue);
-            text-shadow: 2px 4px 8px rgba(12, 74, 110, 0.1);
-            letter-spacing: 1px;
+            line-height: 1.4;
         }
 
         .meme-box {
-            width: 170px;
-            height: 170px;
-            margin: 0 auto 30px;
-            border-radius: 35px;
+            width: 160px;
+            height: 160px;
+            margin: 0 auto 25px;
+            border-radius: 30px;
             overflow: hidden;
-            border: 6px solid white;
-            box-shadow: 0 15px 35px rgba(12, 74, 110, 0.1);
-            background: white;
+            border: 5px solid white;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            background: #fff;
         }
 
         .btn-yes {
             background: var(--accent-blue);
             color: white;
-            padding: 16px 45px;
+            padding: 14px 32px;
             border-radius: 50px;
             font-family: 'Lemon Milk', sans-serif;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             letter-spacing: 0.1em;
-            box-shadow: 0 10px 25px rgba(14, 165, 233, 0.3);
+            box-shadow: 0 8px 20px rgba(14, 165, 233, 0.3);
             border: none;
             cursor: pointer;
-            transition: transform 0.1s;
+            z-index: 20;
         }
 
         .btn-no {
-            background: white;
+            background: rgba(255, 255, 255, 0.8);
             color: #64748b;
-            padding: 14px 28px;
+            padding: 12px 24px;
             border-radius: 50px;
             font-family: 'Lemon Milk', sans-serif;
             font-size: 0.75rem;
             border: 1px solid rgba(14, 165, 233, 0.1);
             cursor: pointer;
+            position: relative; /* Changed from fixed to keep relative to container initially */
+            z-index: 15;
         }
 
         .progress-bar {
             background: rgba(14, 165, 233, 0.1);
             height: 6px;
             border-radius: 10px;
+            margin-bottom: 30px;
         }
 
-        .floating-heart {
-            position: fixed;
-            pointer-events: none;
-            z-index: 100;
+        #loading-screen {
+            position: fixed; inset: 0; background: #e0f2fe; z-index: 100;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
-/* LOADING SCREEN */
-#loading-screen {
-  position: fixed;
-  inset: 0;
-  background: #e0f2fe;
-  z-index: 100;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  transition: opacity 1s ease-out;
-}
-
-.loader-container {
-  position: relative;
-  width: 200px;
-  height: 200px;
-}
-
-.playing-butterfly {
-  position: absolute;
-  width: 40px;
-  height: 30px;
-  top: 50%;
-  left: 50%;
-  margin-top: -15px;
-  margin-left: -20px;
-}
-
-.playing-butterfly:nth-child(1) { animation: play1 3s linear infinite; }
-.playing-butterfly:nth-child(2) { animation: play2 3s linear infinite; }
-
-@keyframes play1 {
-  0% { transform: rotate(0deg) translateX(60px) rotate(0deg); }
-  100% { transform: rotate(360deg) translateX(60px) rotate(-360deg); }
-}
-
-@keyframes play2 {
-  0% { transform: rotate(180deg) translateX(60px) rotate(0deg); }
-  100% { transform: rotate(540deg) translateX(60px) rotate(-360deg); }
-}
-
-.wing {
-  position: absolute;
-  width: 20px;
-  height: 25px;
-  background: linear-gradient(to bottom, #60a5fa, #1d4ed8);
-  border-radius: 50% 50% 0 50%;
-  animation: flap 0.3s ease-in-out infinite;
-}
-
-.wing.right { right: 0; border-radius: 50% 50% 50% 0; transform-origin: left; }
-.wing.left { left: 0; transform-origin: right; }
-
-@keyframes flap {
-  0%, 100% { transform: rotateY(0deg); }
-  50% { transform: rotateY(70deg); }
-}
         
+        .loader-container { position: relative; width: 100px; height: 100px; }
+        .playing-butterfly { position: absolute; width: 30px; height: 20px; top: 50%; left: 50%; }
+        .playing-butterfly:nth-child(1) { animation: circ1 2s linear infinite; }
+        .playing-butterfly:nth-child(2) { animation: circ2 2s linear infinite; }
+        @keyframes circ1 { from { transform: rotate(0deg) translateX(40px); } to { transform: rotate(360deg) translateX(40px); } }
+        @keyframes circ2 { from { transform: rotate(180deg) translateX(40px); } to { transform: rotate(540deg) translateX(40px); } }
+        .wing { position: absolute; width: 15px; height: 20px; background: var(--accent-blue); border-radius: 50% 50% 0 50%; animation: flap 0.3s ease-in-out infinite; }
+        .wing.right { right: 0; border-radius: 50% 50% 50% 0; transform-origin: left; }
+        .wing.left { left: 0; transform-origin: right; }
+        @keyframes flap { 0%, 100% { transform: rotateY(0deg); } 50% { transform: rotateY(75deg); } }
+        
+        .floating-heart { position: fixed; pointer-events: none; z-index: 100; font-size: 24px; }
     </style>
 </head>
-
 <body>
 
 <div id="loading-screen">
-  <div class="loader-container">
-    <div class="playing-butterfly">
-      <div class="wing left"></div>
-      <div class="wing right"></div>
+    <div class="loader-container">
+        <div class="playing-butterfly"><div class="wing left"></div><div class="wing right"></div></div>
+        <div class="playing-butterfly"><div class="wing left"></div><div class="wing right"></div></div>
     </div>
-    <div class="playing-butterfly">
-      <div class="wing left"></div>
-      <div class="wing right"></div>
-    </div>
-  </div>
-  <p class="text-blue-600 font-bold tracking-widest mt-10 animate-pulse">
-    PREPARING YOUR SURPRISE...
-  </p>
+    <p class="text-sky-600 font-bold tracking-widest mt-8 animate-pulse text-xs">PREPARING YOUR SURPRISE...</p>
 </div>
+
 <div id="sparkle-container"></div>
 
-<div class="glass-card" id="mainCard" style="opacity:0;">
+<div class="glass-card" id="mainCard">
     <div class="mb-4">
-        <span class="px-4 py-1.5 bg-sky-100 text-sky-600 text-[10px] font-bold uppercase tracking-widest rounded-full border border-sky-200">
+        <span class="px-3 py-1 bg-sky-100 text-sky-600 text-[9px] font-bold uppercase tracking-widest rounded-full">
             Special Delivery
         </span>
     </div>
@@ -201,54 +143,29 @@
         <img id="catMeme" src="https://media.giphy.com/media/CjmvTCZf2U3p09Cn0h/giphy.gif" class="w-full h-full object-cover">
     </div>
 
-    <h1 id="question" class="main-title text-xl mb-6 min-h-[60px] flex items-center justify-center">
+    <h1 id="question" class="main-title text-lg mb-6 min-h-[50px] flex items-center justify-center">
         Be honest with me...
     </h1>
     
-    <div class="progress-bar w-full overflow-hidden mb-10">
-        <div id="progressFill" class="h-full bg-sky-500 transition-all duration-700 ease-out" style="width: 20%"></div>
+    <div class="progress-bar w-full overflow-hidden">
+        <div id="progressFill" class="h-full bg-sky-500 transition-all duration-500" style="width: 20%"></div>
     </div>
 
-    <div class="flex justify-center items-center gap-5 relative h-16" id="controls">
-        <button class="btn-yes" onclick="handleYes()" id="yesBtn">Yes</button>
+    <div class="flex justify-center items-center gap-4 relative h-24" id="controls">
+        <button class="btn-yes" id="yesBtn">Yes</button>
         <button class="btn-no" id="noBtn">No</button>
     </div>
 </div>
 
 <script>
-    // --- 1. Ambient Sparkles (Matching your letter.html logic) ---
-    function createAmbientSparkle() {
-        const container = document.getElementById('sparkle-container');
-        const sparkle = document.createElement('div');
-        const icons = ['âœ¨', 'ðŸ’™', 'ðŸ’§', 'ðŸ’Ž'];
-        sparkle.className = 'sparkle-bg';
-        sparkle.innerHTML = icons[Math.floor(Math.random() * icons.length)];
-        sparkle.style.left = Math.random() * 100 + 'vw';
-        sparkle.style.top = '110vh';
-        sparkle.style.fontSize = (Math.random() * 15 + 10) + 'px';
-        container.appendChild(sparkle);
-
-        gsap.to(sparkle, {
-            y: '-120vh',
-            x: (Math.random() - 0.5) * 100,
-            duration: Math.random() * 3 + 4,
-            ease: "none",
-            onComplete: () => sparkle.remove()
-        });
-    }
-    setInterval(createAmbientSparkle, 700);
-
-    // --- 2. Interaction Logic ---
-    let step = 0;
-    let yesScale = 1;
-    const questions = [
-        "Be honest with me...",
-        "Do you enjoy talking with me? ðŸ’™",
-        "Do I make you smile sometimes? ðŸ˜Š",
-        "Do you feel something special? ðŸ’«",
-        "Will you be mine? ðŸ’–"
+    const stepsData = [
+        { q: "Be honest with me...", yes: "Okay!", no: "No." },
+        { q: "Do you enjoy talking with me? 💙", yes: "I love it!", no: "Not really" },
+        { q: "Do I make you smile sometimes? 😊", yes: "Every day!", no: "Rarely" },
+        { q: "Do you feel something special? ✨", yes: "Maybe...", no: "Just friends" },
+        { q: "Will you be mine? 💖", yes: "YES!", no: "Wait..." }
     ];
-    
+
     const memes = [
         "https://media.giphy.com/media/CjmvTCZf2U3p09Cn0h/giphy.gif",
         "https://media.giphy.com/media/ICOgUNoMPvGCI/giphy.gif",
@@ -258,107 +175,135 @@
         "https://media.giphy.com/media/yFQ0ywscgobJK/giphy.gif"
     ];
 
+    let currentStep = 0;
+    let yesScale = 1;
+
     const qText = document.getElementById("question");
-    const memeImg = document.getElementById("catMeme");
-    const noBtn = document.getElementById("noBtn");
     const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
     const progressFill = document.getElementById("progressFill");
 
-    function handleYes() {
-        spawnBurst();
-        step++;
+    function updateStep() {
+        const data = stepsData[currentStep];
+        
+        // RESET NO BUTTON POSITION
+        gsap.to(noBtn, {
+            x: 0, y: 0, 
+            scale: 1,
+            duration: 0.5, 
+            ease: "back.out(1.7)",
+            onStart: () => { noBtn.style.position = 'relative'; }
+        });
 
-        if(step < questions.length) {
-            gsap.to(["#question", "#memeBox"], {
-                opacity: 0,
-                scale: 0.9,
-                duration: 0.2,
-                onComplete: () => {
-                    qText.innerText = questions[step];
-                    memeImg.src = memes[step];
-                    progressFill.style.width = ((step + 1) / questions.length) * 100 + "%";
-                    gsap.to(["#question", "#memeBox"], { opacity: 1, scale: 1, duration: 0.4, ease: "back.out" });
-                }
-            });
+        gsap.to(["#question", "#memeBox", "#yesBtn", "#noBtn"], {
+            opacity: 0, scale: 0.9, duration: 0.2, stagger: 0.05,
+            onComplete: () => {
+                qText.innerText = data.q;
+                yesBtn.innerText = data.yes;
+                noBtn.innerText = data.no;
+                document.getElementById("catMeme").src = memes[currentStep];
+                progressFill.style.width = ((currentStep + 1) / stepsData.length) * 100 + "%";
+                
+                gsap.to(["#question", "#memeBox", "#yesBtn", "#noBtn"], {
+                    opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.5)", stagger: 0.05
+                });
+            }
+        });
+    }
+
+    function moveNo() {
+        // Calculate safe boundaries (keeping it visible on screen)
+        const padding = 50;
+        const maxX = (window.innerWidth / 2) - padding;
+        const maxY = (window.innerHeight / 2) - padding;
+        
+        const randomX = (Math.random() - 0.5) * maxX * 1.5;
+        const randomY = (Math.random() - 0.5) * maxY * 1.5;
+        
+        // Apply smooth elastic movement
+        gsap.to(noBtn, { 
+            x: randomX, 
+            y: randomY, 
+            duration: 0.8, 
+            ease: "elastic.out(1, 0.5)",
+            onStart: () => { noBtn.style.position = 'fixed'; }
+        });
+
+        // Yes button grows to encourage the user
+        yesScale += 0.12;
+        gsap.to(yesBtn, { scale: yesScale, duration: 0.4, ease: "back.out(2)" });
+    }
+
+    function handleYes() {
+        gsap.fromTo(yesBtn, { scale: yesScale * 0.8 }, { scale: yesScale, duration: 0.4, ease: "elastic.out(1, 0.3)" });
+        spawnHearts();
+        
+        currentStep++;
+        if (currentStep < stepsData.length) {
+            updateStep();
         } else {
             finishAction();
         }
     }
 
-    function spawnBurst() {
-        const icons = ['ðŸ’–', 'âœ¨', 'ðŸ’™'];
+    function spawnHearts() {
         for(let i = 0; i < 10; i++) {
             const h = document.createElement("div");
             h.className = "floating-heart";
-            h.innerText = icons[Math.floor(Math.random() * icons.length)];
+            h.innerText = ['💖', '💙', '✨'][Math.floor(Math.random()*3)];
             document.body.appendChild(h);
-
             const rect = yesBtn.getBoundingClientRect();
-            gsap.set(h, { x: rect.left + rect.width/2, y: rect.top });
-
+            gsap.set(h, { x: rect.left + (rect.width/2), y: rect.top });
             gsap.to(h, {
                 x: "+=" + (Math.random() - 0.5) * 400,
                 y: "-=" + (Math.random() * 300 + 100),
-                opacity: 0,
-                rotation: Math.random() * 360,
-                duration: 1.5,
+                opacity: 0, rotation: 360, duration: 1.5,
                 onComplete: () => h.remove()
             });
         }
     }
 
-    function moveNo() {
-        const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - 40) + 20;
-        const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 40) + 20;
-        gsap.to(noBtn, { position: "fixed", left: x, top: y, duration: 0.3 });
-        
-        yesScale += 0.18;
-        gsap.to(yesBtn, { scale: yesScale, duration: 0.3, ease: "back.out(2)" });
+    function finishAction() {
+        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+        qText.innerHTML = "Opening your <br>surprise now... 💌";
+        gsap.to("#controls, .progress-bar", { opacity: 0, duration: 0.5 });
+        setTimeout(() => {
+            gsap.to("body", { opacity: 0, duration: 1.5, onComplete: () => window.location.href = "letter.html" });
+        }, 2500);
     }
 
-    function finishAction() {
-        confetti({
-            particleCount: 150,
-            spread: 70,
-            origin: { y: 0.6 },
-            colors: ['#0ea5e9', '#38bdf8', '#ffffff']
+    document.addEventListener("DOMContentLoaded", () => {
+        yesBtn.innerText = stepsData[0].yes;
+        noBtn.innerText = stepsData[0].no;
+        yesBtn.onclick = handleYes;
+        
+        // Smoothly trigger movement on hover or touch
+        noBtn.addEventListener('mouseenter', moveNo);
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            moveNo();
         });
 
-        gsap.to("#controls, .progress-bar", { opacity: 0, duration: 0.5 });
-        
-        qText.innerHTML = "Opening your <br>surprise now... ðŸ’Œ";
-        memeImg.src = memes[5];
-        
-        // Match the fade-out vibe to lead into the letter
         setTimeout(() => {
-            gsap.to("body", { 
-                opacity: 0, 
-                duration: 1.2, 
-                onComplete: () => {
-                    // This leads to your letter file
-                    window.location.href = "letter.html"; 
-                }
-            });
-        }, 3000);
-    }
+            const loader = document.getElementById('loading-screen');
+            const card = document.getElementById('mainCard');
+            gsap.to(loader, { opacity: 0, duration: 0.8, onComplete: () => {
+                loader.style.display = 'none';
+                card.style.visibility = 'visible';
+                gsap.from(card, { opacity: 0, y: 30, duration: 1, ease: "power3.out" });
+            }});
+        }, 2000);
+    });
 
-    noBtn.addEventListener("mouseover", moveNo);
-    noBtn.addEventListener("touchstart", (e) => { e.preventDefault(); moveNo(); });
-
-window.onload = () => {
-  const loader = document.getElementById('loading-screen');
-  const card = document.getElementById('mainCard');
-
-  setTimeout(() => {
-    loader.style.opacity = '0';
-
-    setTimeout(() => {
-      loader.style.display = 'none';
-      gsap.to(card, { opacity: 1, y: 0, duration: 1, ease: "power3.out" });
+    setInterval(() => {
+        const s = document.createElement('div');
+        s.className = 'sparkle-bg';
+        s.innerHTML = '✨';
+        s.style.left = Math.random() * 100 + 'vw';
+        s.style.top = '110vh';
+        document.getElementById('sparkle-container').appendChild(s);
+        gsap.to(s, { y: '-120vh', opacity: 0, duration: 5, onComplete: () => s.remove() });
     }, 1000);
-  }, 3000);
-};
-    
 </script>
 
 </body>
