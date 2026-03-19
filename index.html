@@ -22,13 +22,17 @@
             --deep-blue: #0c4a6e;
         }
 
+        /* Applying Lemon Milk to everything */
+        * {
+            font-family: 'Lemon Milk', sans-serif !important;
+        }
+
         body {
             min-height: 100vh;
             background: var(--bg-gradient);
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: 'Inter', sans-serif;
             margin: 0;
             overflow: hidden;
         }
@@ -51,9 +55,9 @@
         }
 
         .main-title {
-            font-family: 'Lemon Milk', sans-serif;
             color: var(--deep-blue);
             line-height: 1.4;
+            letter-spacing: 0.02em;
         }
 
         .meme-box {
@@ -72,7 +76,6 @@
             color: white;
             padding: 14px 32px;
             border-radius: 50px;
-            font-family: 'Lemon Milk', sans-serif;
             font-size: 0.8rem;
             letter-spacing: 0.1em;
             box-shadow: 0 8px 20px rgba(14, 165, 233, 0.3);
@@ -86,11 +89,10 @@
             color: #64748b;
             padding: 12px 24px;
             border-radius: 50px;
-            font-family: 'Lemon Milk', sans-serif;
             font-size: 0.75rem;
             border: 1px solid rgba(14, 165, 233, 0.1);
             cursor: pointer;
-            position: relative; /* Changed from fixed to keep relative to container initially */
+            position: relative;
             z-index: 15;
         }
 
@@ -186,7 +188,6 @@
     function updateStep() {
         const data = stepsData[currentStep];
         
-        // RESET NO BUTTON POSITION
         gsap.to(noBtn, {
             x: 0, y: 0, 
             scale: 1,
@@ -212,7 +213,6 @@
     }
 
     function moveNo() {
-        // Calculate safe boundaries (keeping it visible on screen)
         const padding = 50;
         const maxX = (window.innerWidth / 2) - padding;
         const maxY = (window.innerHeight / 2) - padding;
@@ -220,7 +220,6 @@
         const randomX = (Math.random() - 0.5) * maxX * 1.5;
         const randomY = (Math.random() - 0.5) * maxY * 1.5;
         
-        // Apply smooth elastic movement
         gsap.to(noBtn, { 
             x: randomX, 
             y: randomY, 
@@ -229,7 +228,6 @@
             onStart: () => { noBtn.style.position = 'fixed'; }
         });
 
-        // Yes button grows to encourage the user
         yesScale += 0.12;
         gsap.to(yesBtn, { scale: yesScale, duration: 0.4, ease: "back.out(2)" });
     }
@@ -277,7 +275,6 @@
         noBtn.innerText = stepsData[0].no;
         yesBtn.onclick = handleYes;
         
-        // Smoothly trigger movement on hover or touch
         noBtn.addEventListener('mouseenter', moveNo);
         noBtn.addEventListener('touchstart', (e) => {
             e.preventDefault();
