@@ -8,19 +8,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-
-    <style>
-        @font-face {<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>A Special Message</title>
-
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     
     <style>
         @font-face {
@@ -155,20 +142,20 @@
         <div class="playing-butterfly"><div class="wing left"></div><div class="wing right"></div></div>
         <div class="playing-butterfly"><div class="wing left"></div><div class="wing right"></div></div>
     </div>
-    <p class="text-sky-600 font-bold tracking-widest mt-8 animate-pulse text-xs">PREPARING YOUR SURPRISE...</p>
+    <p class="text-sky-400 font-bold tracking-widest mt-8 animate-pulse text-xs">PREPARING YOUR SURPRISE...</p>
 </div>
 
 <div id="sparkle-container"></div>
 
 <div class="glass-card" id="mainCard">
     <div class="mb-4">
-        <span class="px-3 py-1 bg-sky-100 text-sky-600 text-[9px] font-bold uppercase tracking-widest rounded-full">
+        <span class="px-3 py-1 bg-sky-900/40 text-sky-300 text-[9px] font-bold uppercase tracking-widest rounded-full border border-sky-500/30">
             Special Delivery
         </span>
     </div>
     
     <div class="meme-box" id="memeBox">
-        <img id="catMeme" src="https://media.giphy.com/media/CjmvTCZf2U3p09Cn0h/giphy.gif" class="w-full h-full object-cover">
+        <img id="catMeme" src="" class="w-full h-full object-cover grayscale-[20%] contrast-[110%]">
     </div>
 
     <h1 id="question" class="main-title text-lg mb-6 min-h-[50px] flex items-center justify-center">
@@ -176,7 +163,7 @@
     </h1>
     
     <div class="progress-bar w-full overflow-hidden">
-        <div id="progressFill" class="h-full bg-sky-500 transition-all duration-500" style="width: 20%"></div>
+        <div id="progressFill" class="h-full bg-sky-400 shadow-[0_0_10px_#38bdf8] transition-all duration-500" style="width: 20%"></div>
     </div>
 
     <div class="flex justify-center items-center gap-4 relative h-24" id="controls">
@@ -186,7 +173,6 @@
 </div>
 
 <script>
-    // Combined questions and memes into one array for perfect syncing
     const stepsData = [
         { q: "Be honest with me...", yes: "Okay!", no: "No.", img: "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZm1xdXlzbXV4b2RhYm1seXc3Nms2c2czeHA4ZGtkeGFybnRjdG80byZlcD12MV9naWZzX3NlYXJjaCZjdD1n/901mxGLGQN2PyCQpoc/200.webp" },
         { q: "Do you enjoy talking with me? 💙", yes: "I love it!", no: "Not really", img: "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExZm1xdXlzbXV4b2RhYm1seXc3Nms2c2czeHA4ZGtkeGFybnRjdG80byZlcD12MV9naWZzX3NlYXJjaCZjdD1n/GAXXHdS0zXawVLOJLY/giphy.webp" },
@@ -207,27 +193,19 @@
     function updateStep() {
         const data = stepsData[currentStep];
         
-        // Reset "No" button position
         gsap.to(noBtn, {
-            x: 0, y: 0, 
-            scale: 1,
-            duration: 0.5, 
-            ease: "back.out(1.7)",
+            x: 0, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.7)",
             onStart: () => { noBtn.style.position = 'relative'; }
         });
 
-        // Animate everything out and back in with new data
         gsap.to(["#question", "#memeBox", "#yesBtn", "#noBtn"], {
             opacity: 0, scale: 0.9, duration: 0.2, stagger: 0.05,
             onComplete: () => {
-                // Update text AND image together
                 qText.innerText = data.q;
                 yesBtn.innerText = data.yes;
                 noBtn.innerText = data.no;
                 catMeme.src = data.img; 
-                
                 progressFill.style.width = ((currentStep + 1) / stepsData.length) * 100 + "%";
-                
                 gsap.to(["#question", "#memeBox", "#yesBtn", "#noBtn"], {
                     opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.5)", stagger: 0.05
                 });
@@ -239,32 +217,23 @@
         const padding = 50;
         const maxX = (window.innerWidth / 2) - padding;
         const maxY = (window.innerHeight / 2) - padding;
-        
         const randomX = (Math.random() - 0.5) * maxX * 1.5;
         const randomY = (Math.random() - 0.5) * maxY * 1.5;
         
         gsap.to(noBtn, { 
-            x: randomX, 
-            y: randomY, 
-            duration: 0.8, 
-            ease: "elastic.out(1, 0.5)",
+            x: randomX, y: randomY, duration: 0.8, ease: "elastic.out(1, 0.5)",
             onStart: () => { noBtn.style.position = 'fixed'; }
         });
 
-        yesScale += 0.12;
+        yesScale += 0.15;
         gsap.to(yesBtn, { scale: yesScale, duration: 0.4, ease: "back.out(2)" });
     }
 
     function handleYes() {
         gsap.fromTo(yesBtn, { scale: yesScale * 0.8 }, { scale: yesScale, duration: 0.4, ease: "elastic.out(1, 0.3)" });
         spawnHearts();
-        
         currentStep++;
-        if (currentStep < stepsData.length) {
-            updateStep();
-        } else {
-            finishAction();
-        }
+        if (currentStep < stepsData.length) { updateStep(); } else { finishAction(); }
     }
 
     function spawnHearts() {
@@ -285,7 +254,7 @@
     }
 
     function finishAction() {
-        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#00d4ff', '#ffffff', '#3b82f6'] });
         qText.innerHTML = "Opening your <br>surprise now... 💌";
         gsap.to("#controls, .progress-bar", { opacity: 0, duration: 0.5 });
         setTimeout(() => {
@@ -294,18 +263,10 @@
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-        // Initialize first step
-        yesBtn.innerText = stepsData[0].yes;
-        noBtn.innerText = stepsData[0].no;
         catMeme.src = stepsData[0].img;
-        
         yesBtn.onclick = handleYes;
-        
         noBtn.addEventListener('mouseenter', moveNo);
-        noBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            moveNo();
-        });
+        noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveNo(); });
 
         setTimeout(() => {
             const loader = document.getElementById('loading-screen');
@@ -321,12 +282,14 @@
     setInterval(() => {
         const s = document.createElement('div');
         s.className = 'sparkle-bg';
-        s.innerHTML = '✨';
+        s.innerHTML = ['✨', '•', '◦'][Math.floor(Math.random()*3)];
         s.style.left = Math.random() * 100 + 'vw';
         s.style.top = '110vh';
+        s.style.color = '#00d4ff';
+        s.style.fontSize = (Math.random() * 10 + 10) + 'px';
         document.getElementById('sparkle-container').appendChild(s);
-        gsap.to(s, { y: '-120vh', opacity: 0, duration: 5, onComplete: () => s.remove() });
-    }, 1000);
+        gsap.to(s, { y: '-120vh', opacity: 0, duration: Math.random() * 3 + 4, onComplete: () => s.remove() });
+    }, 600);
 </script>
 
 </body>
