@@ -109,14 +109,88 @@
             pointer-events: none;
             z-index: 100;
         }
+/* LOADING SCREEN */
+#loading-screen {
+  position: fixed;
+  inset: 0;
+  background: #e0f2fe;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 1s ease-out;
+}
+
+.loader-container {
+  position: relative;
+  width: 200px;
+  height: 200px;
+}
+
+.playing-butterfly {
+  position: absolute;
+  width: 40px;
+  height: 30px;
+  top: 50%;
+  left: 50%;
+  margin-top: -15px;
+  margin-left: -20px;
+}
+
+.playing-butterfly:nth-child(1) { animation: play1 3s linear infinite; }
+.playing-butterfly:nth-child(2) { animation: play2 3s linear infinite; }
+
+@keyframes play1 {
+  0% { transform: rotate(0deg) translateX(60px) rotate(0deg); }
+  100% { transform: rotate(360deg) translateX(60px) rotate(-360deg); }
+}
+
+@keyframes play2 {
+  0% { transform: rotate(180deg) translateX(60px) rotate(0deg); }
+  100% { transform: rotate(540deg) translateX(60px) rotate(-360deg); }
+}
+
+.wing {
+  position: absolute;
+  width: 20px;
+  height: 25px;
+  background: linear-gradient(to bottom, #60a5fa, #1d4ed8);
+  border-radius: 50% 50% 0 50%;
+  animation: flap 0.3s ease-in-out infinite;
+}
+
+.wing.right { right: 0; border-radius: 50% 50% 50% 0; transform-origin: left; }
+.wing.left { left: 0; transform-origin: right; }
+
+@keyframes flap {
+  0%, 100% { transform: rotateY(0deg); }
+  50% { transform: rotateY(70deg); }
+}
+        
     </style>
 </head>
 
 <body>
 
+<div id="loading-screen">
+  <div class="loader-container">
+    <div class="playing-butterfly">
+      <div class="wing left"></div>
+      <div class="wing right"></div>
+    </div>
+    <div class="playing-butterfly">
+      <div class="wing left"></div>
+      <div class="wing right"></div>
+    </div>
+  </div>
+  <p class="text-blue-600 font-bold tracking-widest mt-10 animate-pulse">
+    PREPARING YOUR SURPRISE...
+  </p>
+</div>
 <div id="sparkle-container"></div>
 
-<div class="glass-card" id="mainCard">
+<div class="glass-card" id="mainCard" style="opacity:0;">
     <div class="mb-4">
         <span class="px-4 py-1.5 bg-sky-100 text-sky-600 text-[10px] font-bold uppercase tracking-widest rounded-full border border-sky-200">
             Special Delivery
@@ -270,6 +344,21 @@
 
     noBtn.addEventListener("mouseover", moveNo);
     noBtn.addEventListener("touchstart", (e) => { e.preventDefault(); moveNo(); });
+
+window.onload = () => {
+  const loader = document.getElementById('loading-screen');
+  const card = document.getElementById('mainCard');
+
+  setTimeout(() => {
+    loader.style.opacity = '0';
+
+    setTimeout(() => {
+      loader.style.display = 'none';
+      gsap.to(card, { opacity: 1, y: 0, duration: 1, ease: "power3.out" });
+    }, 1000);
+  }, 3000);
+};
+    
 </script>
 
 </body>
