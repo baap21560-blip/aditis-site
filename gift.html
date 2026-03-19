@@ -72,13 +72,12 @@
             pointer-events: none;
             z-index: 100;
             border: 1px solid rgba(14, 165, 233, 0.2);
-            /* This ensures text wraps correctly and stays narrow */
             width: auto;
             max-width: 180px; 
             min-width: 100px;
             text-align: center;
             line-height: 1.2;
-            visibility: hidden; /* Hidden until positioned */
+            visibility: hidden;
         }
 
         .instruction-text {
@@ -109,31 +108,105 @@
 
     <script>
         const reasons = [
-            "Your beautiful smile, Karuna 😊",
-            "The way you make me laugh 🤣",
-            "Your kind and pure heart 💖",
-            "How you always support me 🤝",
-            "Your sleepy morning voice 😴",
-            "The way you look at me 👀",
-            "How safe I feel with you 🏠",
-            "Our late night talks 🌙",
-            "Simply because you are YOU 💙",
-            "Karuna, you are my favorite person 🌸",
-            "The way your name sounds 🗣️",
-            "Your intelligence & wit 🧠",
-            "How you handle my moods 🌊",
-            "That glow in your eyes ✨",
-            "Your cute little habits 🎀",
-            "How you make every day better ☀️",
-            "Karuna, you're my best friend 👫",
-            "The way you care for others 🕊️",
-            "Your beautiful soul inside out 💎",
-            "Everything about you is special 🌟",
-            "The peace I find in you 🧘‍♂️",
-            "My life is better with Karuna 🌍",
-            "You are my dream come true 💭",
-            "Your soft and gentle nature 🧸",
-            "The way you understand me 🕯️"
+"Your beautiful smile, Karuna 😊",
+"You make ordinary days feel special 💫",
+"The way you smile makes everything better 😊",
+"I feel calm whenever I talk to you 🌿",
+"You understand me without needing words 🤍",
+"You make me laugh even on bad days 🌧️",
+"Being with you feels like home 🏡",
+"You make everything feel lighter ✨",
+"I can be completely myself around you 🫶",
+"You make silence feel comfortable 🤫",
+"You always know how to make me smile 😊",
+"Because you are YOU!",
+"The way you care about little things 💌",
+"You make me feel important 💎",
+"You bring peace into my life 🕊️",
+"You make every moment memorable 📸",
+"You make my heart feel safe ❤️",
+"You support me no matter what 🤝",
+"You make me forget my worries 🌙",
+"You bring happiness without trying 🌸",
+"You make life feel easier 💕",
+"You make me look forward to tomorrow 🌅",
+
+"Your voice is my favorite sound 🎶",
+"You make even boring moments fun 🎈",
+"You always stay when things get hard 🛡️",
+"You make everything feel worth it 💖",
+"You inspire me to be better 🌱",
+"You make me feel lucky 🍀",
+"You are my comfort place 🛏️",
+"You make my world brighter ☀️",
+"You understand my moods 🌊",
+"You make my heart happy 💓",
+
+"Karuna, you make everything feel right 💙",
+"The way you look at me means everything 👀",
+"You make me feel truly loved 💖",
+"You bring joy into my life 🎉",
+"You make me feel safe and secure 🔐",
+"You are my favorite thought 💭",
+"You make every day better 🌼",
+"You give me a reason to smile 😊",
+"You make my life beautiful 🌺",
+"You make me feel complete 🧩",
+
+"You make my world peaceful 🕊️",
+"You make my heart race sometimes 💓",
+"You make me feel special 🌟",
+"You always understand me 🤍",
+"You make everything more meaningful 💫",
+"You make my day brighter ☀️",
+"You make me feel valued 💎",
+"You make me happy without trying 😊",
+"You make my life better 🌍",
+"You are my safe place 🏡",
+
+"Karuna, you are my favorite person 🌸",
+"You make everything feel magical ✨",
+"You make me feel strong 💪",
+"You make every second count ⏳",
+"You make me feel important 💖",
+"You are my happiness 🌈",
+"You make me feel at peace 🌿",
+"You make my heart feel full ❤️",
+"You make everything easier 💕",
+"You make me smile randomly 😊",
+
+"You make my world complete 🌎",
+"You make me feel understood 🤍",
+"You make my life brighter 🌞",
+"You make me feel lucky every day 🍀",
+"You make me feel safe always 🛡️",
+"You make everything better 💫",
+"You make me feel special always 🌟",
+"You make my heart feel warm 🔥",
+"You make me feel loved 💖",
+"You make me feel at home 🏡",
+
+"Karuna, you make my life happier 💙",
+"You make me feel calm and relaxed 🌊",
+"You make everything feel right ✔️",
+"You make my days better 🌼",
+"You make my heart feel safe ❤️",
+"You make me feel complete 🧩",
+"You make my world brighter ☀️",
+"You make me feel special 💎",
+"You make my life meaningful 💫",
+"You make me feel loved always 💕",
+
+"You make everything feel perfect 🌸",
+"You make me feel happy 😊",
+"You make my life better every day 🌍",
+"You make my heart smile 💓",
+"You make everything beautiful 🌺",
+"You make me feel amazing ✨",
+"You make my world peaceful 🕊️",
+"You make me feel safe and happy 🏡",
+"You make everything worth it 💖",
+"You make me feel complete ❤️"
         ];
 
         function spawnReason() {
@@ -142,61 +215,53 @@
             card.innerText = reasons[Math.floor(Math.random() * reasons.length)];
             document.body.appendChild(card);
             
-            // Jar Center
             const jarRect = document.getElementById('jar').getBoundingClientRect();
             const startX = jarRect.left + (jarRect.width / 2);
             const startY = jarRect.top + 20;
 
-            // Wait for DOM to calculate card size, then position safely
             requestAnimationFrame(() => {
-                const cardWidth = card.offsetWidth;
-                const cardHeight = card.offsetHeight;
-                const screenW = window.innerWidth;
-                const screenH = window.innerHeight;
+    const cardWidth = card.offsetWidth;
+    const cardHeight = card.offsetHeight;
+    const screenW = window.innerWidth;
+    const screenH = window.innerHeight;
 
-                // CALCULATE SAFE ZONE
-                // Ensures card never goes closer than 20px to any edge
-                const safeX = Math.max(20, Math.min(screenW - cardWidth - 20, Math.random() * (screenW - cardWidth)));
-                // Keeps cards in the upper half/middle so they don't cover the jar or buttons
-                const safeY = Math.max(40, Math.min(jarRect.top - cardHeight - 20, Math.random() * (jarRect.top - cardHeight)));
+    const padding = 20;
 
-                gsap.set(card, { 
-                    x: startX - (cardWidth / 2), 
-                    y: startY, 
-                    scale: 0, 
-                    opacity: 0,
-                    visibility: 'visible'
-                });
+    // PERFECT SAFE RANDOM POSITION
+    const safeX = Math.floor(Math.random() * (screenW - cardWidth - padding * 2)) + padding;
+    const safeY = Math.floor(Math.random() * (screenH - cardHeight - padding * 2)) + padding;
 
-                const tl = gsap.timeline();
-                
-                tl.to(card, {
-                    x: safeX,
-                    y: safeY,
-                    scale: 1,
-                    opacity: 1,
-                    rotation: (Math.random() - 0.5) * 10,
-                    duration: 0.6,
-                    ease: "back.out(1.5)"
-                })
-                .to(card, {
-                    y: "-=10",
-                    duration: 1.5,
-                    repeat: -1,
-                    yoyo: true,
-                    ease: "sine.inOut"
-                })
-                .to(card, {
-                    opacity: 0,
-                    scale: 0.7,
-                    duration: 0.6,
-                    delay: 2,
-                    onComplete: () => card.remove()
-                });
-            });
+    // SET USING LEFT/TOP (NOT TRANSFORM)
+    card.style.left = safeX + "px";
+    card.style.top = safeY + "px";
+    card.style.visibility = "visible";
+
+    // ANIMATION (NO POSITION OVERRIDE)
+    gsap.fromTo(card,
+        { scale: 0, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(1.7)" }
+    );
+
+    // FLOAT EFFECT (SAFE — no drift)
+    gsap.to(card, {
+        y: "-=8",
+        duration: 1.2,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut"
+    });
+
+    // REMOVE
+    gsap.to(card, {
+        opacity: 0,
+        scale: 0.8,
+        duration: 0.5,
+        delay: 2.5,
+        onComplete: () => card.remove()
+    });
+});
         }
 
-        // Jar "Squish" effect
         document.getElementById('jar').addEventListener('click', function() {
             gsap.to(this, {
                 scaleX: 1.15,
