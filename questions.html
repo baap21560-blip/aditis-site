@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>A Special Message</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* Importing Lemon Milk to match your letter */
+        @font-face {
+            font-family: 'Lemon Milk';
+            src: url('https://db.onlinewebfonts.com/t/718a746f364746864115f5d625d911b3.woff2') format('woff2');
+        }
+
+        :root {
+            --bg-gradient: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+            --accent-blue: #0ea5e9;
+            --deep-blue: #0c4a6e;
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--bg-gradient);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        /* Ambient Sparkles matching your letter's style */
+        .sparkle-bg {
+            position: absolute;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 40px;
+            padding: 50px 30px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(12, 74, 110, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            z-index: 10;
+        }
+
+        .main-title {
+            font-family: 'Lemon Milk', sans-serif;
+            color: var(--deep-blue);
+            text-shadow: 2px 4px 8px rgba(12, 74, 110, 0.1);
+            letter-spacing: 1px;
+        }
+
+        .meme-box {
+            width: 170px;
+            height: 170px;
+            margin: 0 auto 30px;
+            border-radius: 35px;
+            overflow: hidden;
+            border: 6px solid white;
+            box-shadow: 0 15px 35px rgba(12, 74, 110, 0.1);
+            background: white;
+        }
+
+        .btn-yes {
+            background: var(--accent-blue);
+            color: white;
+            padding: 16px 45px;
+            border-radius: 50px;
+            font-family: 'Lemon Milk', sans-serif;
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
+            box-shadow: 0 10px 25px rgba(14, 165, 233, 0.3);
+            border: none;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .btn-no {
+            background: white;
+            color: #64748b;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-family: 'Lemon Milk', sans-serif;
+            font-size: 0.75rem;
+            border: 1px solid rgba(14, 165, 233, 0.1);
+            cursor: pointer;
+        }
+
+        .progress-bar {
+            background: rgba(14, 165, 233, 0.1);
+            height: 6px;
+            border-radius: 10px;
+        }
+
+        .floating-heart {
+            position: fixed;
+            pointer-events: none;
+            z-index: 100;
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="sparkle-container"></div>
+
+<div class="glass-card" id="mainCard">
+    <div class="mb-4">
+        <span class="px-4 py-1.5 bg-sky-100 text-sky-600 text-[10px] font-bold uppercase tracking-widest rounded-full border border-sky-200">
+            Special Delivery
+        </span>
+    </div>
+    
+    <div class="meme-box" id="memeBox">
+        <img id="catMeme" src="https://media.giphy.com/media/CjmvTCZf2U3p09Cn0h/giphy.gif" class="w-full h-full object-cover">
+    </div>
+
+    <h1 id="question" class="main-title text-xl mb-6 min-h-[60px] flex items-center justify-center">
+        Be honest with me...
+    </h1>
+    
+    <div class="progress-bar w-full overflow-hidden mb-10">
+        <div id="progressFill" class="h-full bg-sky-500 transition-all duration-700 ease-out" style="width: 20%"></div>
+    </div>
+
+    <div class="flex justify-center items-center gap-5 relative h-16" id="controls">
+        <button class="btn-yes" onclick="handleYes()" id="yesBtn">Yes</button>
+        <button class="btn-no" id="noBtn">No</button>
+    </div>
+</div>
+
+<script>
+    // --- 1. Ambient Sparkles (Matching your letter.html logic) ---
+    function createAmbientSparkle() {
+        const container = document.getElementById('sparkle-container');
+        const sparkle = document.createElement('div');
+        const icons = ['✨', '💙', '💧', '💎'];
+        sparkle.className = 'sparkle-bg';
+        sparkle.innerHTML = icons[Math.floor(Math.random() * icons.length)];
+        sparkle.style.left = Math.random() * 100 + 'vw';
+        sparkle.style.top = '110vh';
+        sparkle.style.fontSize = (Math.random() * 15 + 10) + 'px';
+        container.appendChild(sparkle);
+
+        gsap.to(sparkle, {
+            y: '-120vh',
+            x: (Math.random() - 0.5) * 100,
+            duration: Math.random() * 3 + 4,
+            ease: "none",
+            onComplete: () => sparkle.remove()
+        });
+    }
+    setInterval(createAmbientSparkle, 700);
+
+    // --- 2. Interaction Logic ---
+    let step = 0;
+    let yesScale = 1;
+    const questions = [
+        "Be honest with me...",
+        "Do you enjoy talking with me? 💙",
+        "Do I make you smile sometimes? 😊",
+        "Do you feel something special? 💫",
+        "Will you be mine? 💖"
+    ];
+    
+    const memes = [
+        "https://media.giphy.com/media/CjmvTCZf2U3p09Cn0h/giphy.gif",
+        "https://media.giphy.com/media/ICOgUNoMPvGCI/giphy.gif",
+        "https://media.giphy.com/media/GeimqsH0TLDt4tScGw/giphy.gif",
+        "https://media.giphy.com/media/jpbnoe3UIa8TU8wE3u/giphy.gif",
+        "https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif",
+        "https://media.giphy.com/media/yFQ0ywscgobJK/giphy.gif"
+    ];
+
+    const qText = document.getElementById("question");
+    const memeImg = document.getElementById("catMeme");
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+    const progressFill = document.getElementById("progressFill");
+
+    function handleYes() {
+        spawnBurst();
+        step++;
+
+        if(step < questions.length) {
+            gsap.to(["#question", "#memeBox"], {
+                opacity: 0,
+                scale: 0.9,
+                duration: 0.2,
+                onComplete: () => {
+                    qText.innerText = questions[step];
+                    memeImg.src = memes[step];
+                    progressFill.style.width = ((step + 1) / questions.length) * 100 + "%";
+                    gsap.to(["#question", "#memeBox"], { opacity: 1, scale: 1, duration: 0.4, ease: "back.out" });
+                }
+            });
+        } else {
+            finishAction();
+        }
+    }
+
+    function spawnBurst() {
+        const icons = ['💖', '✨', '💙'];
+        for(let i = 0; i < 10; i++) {
+            const h = document.createElement("div");
+            h.className = "floating-heart";
+            h.innerText = icons[Math.floor(Math.random() * icons.length)];
+            document.body.appendChild(h);
+
+            const rect = yesBtn.getBoundingClientRect();
+            gsap.set(h, { x: rect.left + rect.width/2, y: rect.top });
+
+            gsap.to(h, {
+                x: "+=" + (Math.random() - 0.5) * 400,
+                y: "-=" + (Math.random() * 300 + 100),
+                opacity: 0,
+                rotation: Math.random() * 360,
+                duration: 1.5,
+                onComplete: () => h.remove()
+            });
+        }
+    }
+
+    function moveNo() {
+        const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - 40) + 20;
+        const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 40) + 20;
+        gsap.to(noBtn, { position: "fixed", left: x, top: y, duration: 0.3 });
+        
+        yesScale += 0.18;
+        gsap.to(yesBtn, { scale: yesScale, duration: 0.3, ease: "back.out(2)" });
+    }
+
+    function finishAction() {
+        confetti({
+            particleCount: 150,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ['#0ea5e9', '#38bdf8', '#ffffff']
+        });
+
+        gsap.to("#controls, .progress-bar", { opacity: 0, duration: 0.5 });
+        
+        qText.innerHTML = "Opening your <br>surprise now... 💌";
+        memeImg.src = memes[5];
+        
+        // Match the fade-out vibe to lead into the letter
+        setTimeout(() => {
+            gsap.to("body", { 
+                opacity: 0, 
+                duration: 1.2, 
+                onComplete: () => {
+                    // This leads to your letter file
+                    window.location.href = "letter.html"; 
+                }
+            });
+        }, 3000);
+    }
+
+    noBtn.addEventListener("mouseover", moveNo);
+    noBtn.addEventListener("touchstart", (e) => { e.preventDefault(); moveNo(); });
+</script>
+
+</body>
+</html>
