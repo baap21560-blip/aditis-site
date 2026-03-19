@@ -11,53 +11,71 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
     <style>
+        @font-face {<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>A Special Message</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    
+    <style>
         @font-face {
             font-family: 'Lemon Milk';
             src: url('https://db.onlinewebfonts.com/t/718a746f364746864115f5d625d911b3.woff2') format('woff2');
         }
 
         :root {
-            --bg-gradient: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
-            --accent-blue: #0ea5e9;
-            --deep-blue: #0c4a6e;
+            /* New Dark Theme Palette */
+            --bg-dark: #0a0a0c;
+            --card-bg: rgba(20, 20, 25, 0.7);
+            --accent-glow: #00d4ff; /* Neon Cyan */
+            --text-main: #f8fafc;
         }
 
-        /* Applying Lemon Milk to everything */
         * {
             font-family: 'Lemon Milk', sans-serif !important;
         }
 
         body {
             min-height: 100vh;
-            background: var(--bg-gradient);
+            background-color: var(--bg-dark);
+            /* Radial glow in the background */
+            background-image: radial-gradient(circle at 50% 50%, #111827 0%, #000000 100%);
             display: flex;
             justify-content: center;
             align-items: center;
             margin: 0;
             overflow: hidden;
+            color: var(--text-main);
         }
 
-        .sparkle-bg { position: absolute; pointer-events: none; z-index: 1; }
+        .sparkle-bg { position: absolute; pointer-events: none; z-index: 1; filter: drop-shadow(0 0 5px var(--accent-glow)); }
 
         .glass-card {
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            background: var(--card-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
             border-radius: 40px;
             padding: 40px 20px;
             width: 90%;
             max-width: 400px;
             text-align: center;
-            box-shadow: 0 30px 60px rgba(12, 74, 110, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.7);
+            /* Heavy outer glow and subtle border */
+            box-shadow: 0 0 40px rgba(0, 212, 255, 0.15), inset 0 0 15px rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             z-index: 10;
             visibility: hidden;
         }
 
         .main-title {
-            color: var(--deep-blue);
+            color: var(--text-main);
             line-height: 1.4;
             letter-spacing: 0.02em;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
         }
 
         .meme-box {
@@ -66,45 +84,47 @@
             margin: 0 auto 25px;
             border-radius: 30px;
             overflow: hidden;
-            border: 5px solid white;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            background: #fff;
+            border: 2px solid rgba(0, 212, 255, 0.5);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+            background: #000;
         }
 
         .btn-yes {
-            background: var(--accent-blue);
-            color: white;
+            background: var(--accent-glow);
+            color: #000; /* Dark text on bright button */
             padding: 14px 32px;
             border-radius: 50px;
             font-size: 0.8rem;
+            font-weight: bold;
             letter-spacing: 0.1em;
-            box-shadow: 0 8px 20px rgba(14, 165, 233, 0.3);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.6);
             border: none;
             cursor: pointer;
             z-index: 20;
         }
 
         .btn-no {
-            background: rgba(255, 255, 255, 0.8);
-            color: #64748b;
+            background: rgba(255, 255, 255, 0.05);
+            color: #94a3b8;
             padding: 12px 24px;
             border-radius: 50px;
             font-size: 0.75rem;
-            border: 1px solid rgba(14, 165, 233, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             cursor: pointer;
             position: relative;
             z-index: 15;
+            transition: background 0.3s;
         }
 
         .progress-bar {
-            background: rgba(14, 165, 233, 0.1);
+            background: rgba(255, 255, 255, 0.1);
             height: 6px;
             border-radius: 10px;
             margin-bottom: 30px;
         }
 
         #loading-screen {
-            position: fixed; inset: 0; background: #e0f2fe; z-index: 100;
+            position: fixed; inset: 0; background: var(--bg-dark); z-index: 100;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
         
@@ -114,12 +134,18 @@
         .playing-butterfly:nth-child(2) { animation: circ2 2s linear infinite; }
         @keyframes circ1 { from { transform: rotate(0deg) translateX(40px); } to { transform: rotate(360deg) translateX(40px); } }
         @keyframes circ2 { from { transform: rotate(180deg) translateX(40px); } to { transform: rotate(540deg) translateX(40px); } }
-        .wing { position: absolute; width: 15px; height: 20px; background: var(--accent-blue); border-radius: 50% 50% 0 50%; animation: flap 0.3s ease-in-out infinite; }
+        
+        .wing { 
+            position: absolute; width: 15px; height: 20px; 
+            background: var(--accent-glow); 
+            box-shadow: 0 0 10px var(--accent-glow);
+            border-radius: 50% 50% 0 50%; animation: flap 0.3s ease-in-out infinite; 
+        }
         .wing.right { right: 0; border-radius: 50% 50% 50% 0; transform-origin: left; }
         .wing.left { left: 0; transform-origin: right; }
         @keyframes flap { 0%, 100% { transform: rotateY(0deg); } 50% { transform: rotateY(75deg); } }
         
-        .floating-heart { position: fixed; pointer-events: none; z-index: 100; font-size: 24px; }
+        .floating-heart { position: fixed; pointer-events: none; z-index: 100; font-size: 24px; filter: drop-shadow(0 0 8px var(--accent-glow)); }
     </style>
 </head>
 <body>
