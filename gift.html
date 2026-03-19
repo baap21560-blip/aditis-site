@@ -1,143 +1,211 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Your Gift</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Infinite Reasons</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'Lemon Milk';
+            src: url('https://db.onlinewebfonts.com/t/718a746f364746864115f5d625d911b3.woff2') format('woff2');
+        }
 
-<style>
-@font-face {
-  font-family: 'Lemon Milk';
-  src: url('https://db.onlinewebfonts.com/t/718a746f364746864115f5d625d911b3.woff2') format('woff2');
-}
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: radial-gradient(circle at center, #f0f9ff 0%, #bae6fd 100%);
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            touch-action: none;
+        }
 
-:root {
-  --bg-gradient: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
-  --primary: #0ea5e9;
-  --dark-blue: #1d4ed8;
-}
+        .jar-container {
+            text-align: center;
+            z-index: 10;
+            width: 100%;
+            pointer-events: none;
+        }
 
-body {
-  min-height: 100vh;
-  background: var(--bg-gradient);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: 'Inter', sans-serif;
-  overflow: hidden;
-}
+        .jar {
+            width: 130px;
+            height: 180px;
+            border: 5px solid #0ea5e9;
+            border-radius: 30px 30px 60px 60px;
+            position: relative;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(5px);
+            margin: 0 auto 20px;
+            cursor: pointer;
+            pointer-events: auto;
+            transition: transform 0.2s;
+            box-shadow: 0 15px 30px rgba(14, 165, 233, 0.2);
+        }
 
-/* Card */
-.gift-card {
-  background: white;
-  padding: 3rem 2.5rem;
-  border-radius: 30px;
-  box-shadow: 0 40px 100px rgba(0,50,100,0.2);
-  text-align: center;
-  max-width: 650px;
-  animation: fadeIn 1.2s ease forwards;
-  transform: scale(0.8);
-  opacity: 0;
-}
+        .jar::after {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 10px;
+            background: #0ea5e9;
+            border-radius: 5px;
+        }
 
-@keyframes fadeIn {
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
+        .reason-card {
+            position: absolute;
+            padding: 12px 16px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.1rem;
+            color: #0c4a6e;
+            pointer-events: none;
+            z-index: 100;
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            /* This ensures text wraps correctly and stays narrow */
+            width: auto;
+            max-width: 180px; 
+            min-width: 100px;
+            text-align: center;
+            line-height: 1.2;
+            visibility: hidden; /* Hidden until positioned */
+        }
 
-h1 {
-  font-family: 'Lemon Milk';
-  letter-spacing: 2px;
-  color: #0c4a6e;
-  text-shadow: 2px 4px 8px rgba(12,74,110,0.2);
-}
-
-.message-text {
-  font-family: 'Dancing Script', cursive;
-  font-size: 1.9rem;
-  margin-top: 25px;
-  color: #374151;
-  line-height: 1.5;
-}
-
-.highlight {
-  font-family: 'Lemon Milk';
-  color: var(--primary);
-  letter-spacing: 2px;
-  margin-top: 20px;
-  display: block;
-  font-size: 1.4rem;
-}
-
-/* Button */
-.gift-btn {
-  margin-top: 40px;
-  background: var(--dark-blue);
-  color: white;
-  padding: 14px 32px;
-  border-radius: 50px;
-  font-family: 'Lemon Milk';
-  font-size: 0.75rem;
-  letter-spacing: 0.1em;
-  text-decoration: none;
-  display: inline-block;
-  transition: all 0.4s ease;
-  box-shadow: 0 15px 35px rgba(29,78,216,0.25);
-}
-
-.gift-btn:hover {
-  transform: translateY(-5px) scale(1.05);
-  background: #0c4a6e;
-}
-
-/* Back Button */
-.back-btn {
-  position: fixed;
-  bottom: 30px;
-  left: 30px;
-  background: white;
-  color: var(--dark-blue);
-  padding: 12px 24px;
-  border-radius: 50px;
-  font-family: 'Lemon Milk';
-  font-size: 0.75rem;
-  letter-spacing: 0.1em;
-  text-decoration: none;
-  box-shadow: 0 10px 25px rgba(29,78,216,0.15);
-  transition: 0.3s;
-}
-
-.back-btn:hover {
-  transform: translateY(-5px);
-}
-</style>
+        .instruction-text {
+            font-family: 'Lemon Milk';
+            color: #0c4a6e;
+            letter-spacing: 2px;
+            font-size: 0.7rem;
+            margin-top: 10px;
+            opacity: 0.6;
+        }
+    </style>
 </head>
-
 <body>
 
-<a href="music.html" class="back-btn">← Go Back</a>
+    <div class="jar-container">
+        <div class="jar" id="jar" onclick="spawnReason()">
+            <div class="absolute inset-0 flex flex-wrap justify-center items-center p-4 opacity-30 text-lg">
+                <span>💙</span><span>💖</span><span>✨</span><span>💙</span>
+            </div>
+        </div>
+        <h1 class="text-xl text-sky-900 mb-1" style="font-family: 'Lemon Milk';">For Karuna</h1>
+        <p class="instruction-text">Tap the jar for a reason</p>
+        
+        <div class="mt-8 pointer-events-auto">
+            <a href="questions.html" class="text-sky-500 font-bold text-[9px] uppercase tracking-[0.3em]">Restart Journey</a>
+        </div>
+    </div>
 
-<div class="gift-card">
-  <h1>THIS IS YOUR FINAL GIFT 💙</h1>
+    <script>
+        const reasons = [
+            "Your beautiful smile, Karuna 😊",
+            "The way you make me laugh 🤣",
+            "Your kind and pure heart 💖",
+            "How you always support me 🤝",
+            "Your sleepy morning voice 😴",
+            "The way you look at me 👀",
+            "How safe I feel with you 🏠",
+            "Our late night talks 🌙",
+            "Simply because you are YOU 💙",
+            "Karuna, you are my favorite person 🌸",
+            "The way your name sounds 🗣️",
+            "Your intelligence & wit 🧠",
+            "How you handle my moods 🌊",
+            "That glow in your eyes ✨",
+            "Your cute little habits 🎀",
+            "How you make every day better ☀️",
+            "Karuna, you're my best friend 👫",
+            "The way you care for others 🕊️",
+            "Your beautiful soul inside out 💎",
+            "Everything about you is special 🌟",
+            "The peace I find in you 🧘‍♂️",
+            "My life is better with Karuna 🌍",
+            "You are my dream come true 💭",
+            "Your soft and gentle nature 🧸",
+            "The way you understand me 🕯️"
+        ];
 
-  <div class="message-text">
-    
-  </div>
+        function spawnReason() {
+            const card = document.createElement('div');
+            card.className = 'reason-card';
+            card.innerText = reasons[Math.floor(Math.random() * reasons.length)];
+            document.body.appendChild(card);
+            
+            // Jar Center
+            const jarRect = document.getElementById('jar').getBoundingClientRect();
+            const startX = jarRect.left + (jarRect.width / 2);
+            const startY = jarRect.top + 20;
 
-  <span class="highlight">
-    A simple gift...  
-  </span>
+            // Wait for DOM to calculate card size, then position safely
+            requestAnimationFrame(() => {
+                const cardWidth = card.offsetWidth;
+                const cardHeight = card.offsetHeight;
+                const screenW = window.innerWidth;
+                const screenH = window.innerHeight;
 
-  <!-- CHANGE THIS LINK TO WHERE YOU WANT -->
-  <a href="https://baap21560-blip.github.io/birthday-gift-/" class="gift-btn">
-    OPEN YOUR REAL SURPRISE →
-  </a>
-</div>
+                // CALCULATE SAFE ZONE
+                // Ensures card never goes closer than 20px to any edge
+                const safeX = Math.max(20, Math.min(screenW - cardWidth - 20, Math.random() * (screenW - cardWidth)));
+                // Keeps cards in the upper half/middle so they don't cover the jar or buttons
+                const safeY = Math.max(40, Math.min(jarRect.top - cardHeight - 20, Math.random() * (jarRect.top - cardHeight)));
 
+                gsap.set(card, { 
+                    x: startX - (cardWidth / 2), 
+                    y: startY, 
+                    scale: 0, 
+                    opacity: 0,
+                    visibility: 'visible'
+                });
+
+                const tl = gsap.timeline();
+                
+                tl.to(card, {
+                    x: safeX,
+                    y: safeY,
+                    scale: 1,
+                    opacity: 1,
+                    rotation: (Math.random() - 0.5) * 10,
+                    duration: 0.6,
+                    ease: "back.out(1.5)"
+                })
+                .to(card, {
+                    y: "-=10",
+                    duration: 1.5,
+                    repeat: -1,
+                    yoyo: true,
+                    ease: "sine.inOut"
+                })
+                .to(card, {
+                    opacity: 0,
+                    scale: 0.7,
+                    duration: 0.6,
+                    delay: 2,
+                    onComplete: () => card.remove()
+                });
+            });
+        }
+
+        // Jar "Squish" effect
+        document.getElementById('jar').addEventListener('click', function() {
+            gsap.to(this, {
+                scaleX: 1.15,
+                scaleY: 0.85,
+                duration: 0.1,
+                yoyo: true,
+                repeat: 1
+            });
+        });
+    </script>
 </body>
 </html>
