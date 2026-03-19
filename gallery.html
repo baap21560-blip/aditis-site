@@ -44,11 +44,47 @@
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             cursor: pointer;
             position: relative;
+            /* Added for Flip */
+            perspective: 1000px; 
+            transform-style: preserve-3d;
         }
 
         .photo-card:hover {
             transform: scale(1.05) rotate(0deg) !important;
             z-index: 50;
+        }
+
+        /* Flip Logic Containers */
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .photo-card.is-flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+        }
+
+        .card-back {
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: white;
+            height: 100%;
         }
 
         .photo-card img {
@@ -64,6 +100,16 @@
             color: #475569;
             text-align: center;
             margin-top: 15px;
+        }
+
+        /* Text on back style */
+        .back-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            color: #0c4a6e;
+            padding: 0 10px;
+            line-height: 1.4;
+            text-align: center;
         }
 
         /* Modal / Lightbox */
@@ -90,6 +136,8 @@
             box-shadow: 0 10px 25px rgba(14, 165, 233, 0.15);
             transition: all 0.3s ease;
             text-decoration: none;
+            cursor: pointer;
+            border: none;
         }
 
         .nav-btn:hover {
@@ -103,10 +151,13 @@
 
     <div class="max-w-4xl mx-auto">
         <p class="text-center text-sky-600 font-bold uppercase tracking-[0.3em] text-[10px] mb-2">Moments Captured</p>
-        <h1 class="title text-3xl md:text-4xl mb-12">Our Small Gallery</h1>
+        <h1 class="title text-3xl md:text-4xl mb-4">Our Small Gallery</h1>
+        
+        <div class="flex justify-center mb-12">
+            <button onclick="flipAllCards()" class="nav-btn">Flip All Cards</button>
+        </div>
 
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-6" id="galleryGrid">
-            </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-6" id="galleryGrid"></div>
 
         <div class="flex justify-between items-center mt-16">
             <a href="letter.html" class="nav-btn">← Back</a>
@@ -119,34 +170,50 @@
     </div>
 
     <script>
-        // ADD YOUR OWN IMAGES HERE
         const memories = [
-            { url: 'https://images.unsplash.com/photo-1516627145497-ae6968895b74?w=500', cap: 'Special Day' },
-            { url: 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=500', cap: 'Sweet Memories' },
-            { url: 'https://images.unsplash.com/photo-1523438885200-e635ba2c371e?w=500', cap: 'Laughter & Joy' },
-            { url: 'https://images.unsplash.com/photo-1494972308805-463bc619d34e?w=500', cap: 'Always Together' },
-            { url: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=500', cap: 'Best Moments' },
-            { url: 'https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?w=500', cap: 'Pure Happiness' }
+            { url: 'https://images.unsplash.com/photo-1516627145497-ae6968895b74?w=500', cap: 'Special Day', text: 'I remember this day so clearly. One of my favorite moments.' },
+            { url: 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=500', cap: 'Sweet Memories', text: 'Just a little note about how much this memory means.' },
+            { url: 'https://images.unsplash.com/photo-1523438885200-e635ba2c371e?w=500', cap: 'Laughter & Joy', text: 'We couldnt stop laughing! You make everything better.' },
+            { url: 'https://images.unsplash.com/photo-1494972308805-463bc619d34e?w=500', cap: 'Always Together', text: 'Wherever we go, as long as its with you.' },
+            { url: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=500', cap: 'Best Moments', text: 'The best part of my life is sharing it with you.' },
+            { url: 'https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?w=500', cap: 'Pure Happiness', text: 'This smile of yours is my favorite thing in the world.' }
         ];
 
         const grid = document.getElementById('galleryGrid');
 
-        // Create cards
         memories.forEach((mem, i) => {
-            const rot = (Math.random() - 0.5) * 10; // Random tilt
+            const rot = (Math.random() - 0.5) * 10; 
             const card = document.createElement('div');
             card.className = 'photo-card opacity-0';
             card.style.transform = `rotate(${rot}deg)`;
+            
             card.innerHTML = `
-                <img src="${mem.url}" alt="Memory">
-                <p class="caption">${mem.cap}</p>
+                <div class="card-inner">
+                    <div class="card-front">
+                        <img src="${mem.url}" alt="Memory">
+                        <p class="caption">${mem.cap}</p>
+                    </div>
+                    <div class="card-back">
+                        <p class="back-text">${mem.text}</p>
+                        <p class="caption">❤</p>
+                    </div>
+                </div>
             `;
-            card.onclick = () => {
-                document.getElementById('lightboxImg').src = mem.url;
-                document.getElementById('lightbox').style.display = 'flex';
+
+            card.onclick = (e) => {
+                card.classList.toggle('is-flipped');
             };
+
             grid.appendChild(card);
         });
+
+        // NEW FUNCTION: Flip All Cards
+        function flipAllCards() {
+            const allCards = document.querySelectorAll('.photo-card');
+            allCards.forEach(card => {
+                card.classList.toggle('is-flipped');
+            });
+        }
 
         // GSAP Animation
         gsap.to(".photo-card", {
@@ -158,7 +225,6 @@
             delay: 0.5
         });
 
-        // Initialize cards starting position for animation
         gsap.set(".photo-card", { y: 50 });
     </script>
 </body>
