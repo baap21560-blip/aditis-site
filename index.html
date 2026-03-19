@@ -160,21 +160,13 @@
 </div>
 
 <script>
+    // Combined questions and memes into one array for perfect syncing
     const stepsData = [
-        { q: "Be honest with me...", yes: "Okay!", no: "No." },
-        { q: "Do you enjoy talking with me? 💙", yes: "I love it!", no: "Not really" },
-        { q: "Do I make you smile sometimes? 😊", yes: "Every day!", no: "Rarely" },
-        { q: "Do you feel something special? ✨", yes: "Maybe...", no: "Just friends" },
-        { q: "Will you be mine? 💖", yes: "YES!", no: "Wait..." }
-    ];
-
-    const memes = [
-        "https://media.giphy.com/media/CjmvTCZf2U3p09Cn0h/giphy.gif",
-        "https://media.giphy.com/media/ICOgUNoMPvGCI/giphy.gif",
-        "https://media.giphy.com/media/GeimqsH0TLDt4tScGw/giphy.gif",
-        "https://media.giphy.com/media/jpbnoe3UIa8TU8wE3u/giphy.gif",
-        "https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif",
-        "https://media.giphy.com/media/yFQ0ywscgobJK/giphy.gif"
+        { q: "Be honest with me...", yes: "Okay!", no: "No.", img: "https://media.giphy.com/media/CjmvTCZf2U3p09Cn0h/giphy.gif" },
+        { q: "Do you enjoy talking with me? 💙", yes: "I love it!", no: "Not really", img: "https://media.giphy.com/media/ICOgUNoMPvGCI/giphy.gif" },
+        { q: "Do I make you smile sometimes? 😊", yes: "Every day!", no: "Rarely", img: "https://media.giphy.com/media/GeimqsH0TLDt4tScGw/giphy.gif" },
+        { q: "Do you feel something special? ✨", yes: "Maybe...", no: "Just friends", img: "https://media.giphy.com/media/jpbnoe3UIa8TU8wE3u/giphy.gif" },
+        { q: "Will you be mine? 💖", yes: "YES!", no: "Wait...", img: "https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif" }
     ];
 
     let currentStep = 0;
@@ -184,10 +176,12 @@
     const yesBtn = document.getElementById("yesBtn");
     const noBtn = document.getElementById("noBtn");
     const progressFill = document.getElementById("progressFill");
+    const catMeme = document.getElementById("catMeme");
 
     function updateStep() {
         const data = stepsData[currentStep];
         
+        // Reset "No" button position
         gsap.to(noBtn, {
             x: 0, y: 0, 
             scale: 1,
@@ -196,13 +190,16 @@
             onStart: () => { noBtn.style.position = 'relative'; }
         });
 
+        // Animate everything out and back in with new data
         gsap.to(["#question", "#memeBox", "#yesBtn", "#noBtn"], {
             opacity: 0, scale: 0.9, duration: 0.2, stagger: 0.05,
             onComplete: () => {
+                // Update text AND image together
                 qText.innerText = data.q;
                 yesBtn.innerText = data.yes;
                 noBtn.innerText = data.no;
-                document.getElementById("catMeme").src = memes[currentStep];
+                catMeme.src = data.img; 
+                
                 progressFill.style.width = ((currentStep + 1) / stepsData.length) * 100 + "%";
                 
                 gsap.to(["#question", "#memeBox", "#yesBtn", "#noBtn"], {
@@ -271,8 +268,11 @@
     }
 
     document.addEventListener("DOMContentLoaded", () => {
+        // Initialize first step
         yesBtn.innerText = stepsData[0].yes;
         noBtn.innerText = stepsData[0].no;
+        catMeme.src = stepsData[0].img;
+        
         yesBtn.onclick = handleYes;
         
         noBtn.addEventListener('mouseenter', moveNo);
