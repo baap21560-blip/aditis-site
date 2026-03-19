@@ -338,47 +338,186 @@
   </div>
 
   <script>
-    function handleOpen() {
-      const wrapper = document.getElementById('envelope-container');
-      const letter = document.getElementById('final-letter');
-      const hint = document.getElementById('hint-text');
-      const backBtn = document.getElementById('back-btn');
-      const musicBtn = document.getElementById('music-btn');
+    // --- 1. Ambient Sparkles ---
+function createAmbientSparkle() {
+    const container = document.getElementById('sparkle-container');
+    const sparkle = document.createElement('div');
+    const icons = ['✨', '💙', '💧', '💎'];
+    sparkle.className = 'sparkle-bg';
+    sparkle.innerHTML = icons[Math.floor(Math.random() * icons.length)];
+    sparkle.style.left = Math.random() * 100 + 'vw';
+    sparkle.style.top = '110vh';
+    sparkle.style.fontSize = (Math.random() * 15 + 10) + 'px';
+    container.appendChild(sparkle);
 
-      wrapper.classList.add('open');
-      hint.style.opacity = '0';
+    gsap.to(sparkle, {
+        y: '-120vh',
+        x: (Math.random() - 0.5) * 100,
+        duration: Math.random() * 3 + 4,
+        ease: "none",
+        onComplete: () => sparkle.remove()
+    });
+}
+setInterval(createAmbientSparkle, 700);
 
-      setTimeout(() => {
-        wrapper.style.opacity = '0';
-        wrapper.style.transform = 'translateY(50px) scale(0.8)';
-        
-        letter.classList.add('reveal-letter');
+// --- 2. Interaction Logic ---
+let step = 0;
+let yesScale = 1;
 
-        setTimeout(() => {
-            backBtn.classList.add('show');
-            musicBtn.classList.add('show');
-        }, 500);
-        
-        setTimeout(() => {
-          wrapper.style.display = 'none';
-          for(let i=0; i<30; i++) createSparkle(true);
-        }, 800);
-      }, 1200);
+// CUSTOMIZE YOUR QUESTIONS, MEMES, AND BUTTONS HERE
+const flow = [
+    {
+        question: "Be honest with me...",
+        meme: "https://media.giphy.com/media/CjmvTCZf2U3p09Cn0h/giphy.gif",
+        yesText: "Okay!",
+        noText: "No"
+    },
+    {
+        question: "Do you enjoy talking with me? 💙",
+        meme: "https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif",
+        yesText: "I love it",
+        noText: "Not really"
+    },
+    {
+        question: "Do I make you smile sometimes? 😊",
+        meme: "https://media.giphy.com/media/l0HlQ7LRalQqdWfao/giphy.gif",
+        yesText: "All the time",
+        noText: "Rarely"
+    },
+    {
+        question: "Do you feel something special? 💫",
+        meme: "https://media.giphy.com/media/26ufdipQqU2lhNA4g/giphy.gif",
+        yesText: "Maybe...",
+        noText: "Nope"
+    },
+    {
+        question: "Will you be mine? 💖",
+        meme: "https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif",
+        yesText: "Yes!",
+        noText: "Wait..."
     }
+];
 
-    function createSparkle(isBurst = false) {
-      const container = document.getElementById('sparkle-container');
-      const sparkle = document.createElement('div');
-      const icons = ['✨', '💙', '💧', '💎'];
-      sparkle.className = 'sparkle';
-      sparkle.innerHTML = icons[Math.floor(Math.random() * icons.length)];
-      sparkle.style.left = Math.random() * 100 + 'vw';
-      sparkle.style.fontSize = isBurst ? '35px' : (Math.random() * 15 + 10) + 'px';
-      sparkle.style.animationDuration = (Math.random() * 2 + 3) + 's';
-      container.appendChild(sparkle);
-      setTimeout(() => sparkle.remove(), 5000);
+const finalMeme = "https://media.giphy.com/media/yFQ0ywscgobJK/giphy.gif";
+
+const qText = document.getElementById("question");
+const memeImg = document.getElementById("catMeme");
+const noBtn = document.getElementById("noBtn");
+const yesBtn = document.getElementById("yesBtn");
+const progressFill = document.getElementById("progressFill");
+
+function updateContent() {
+    const current = flow[step];
+    
+    // Reset No button position so it's clickable/visible again for the new question
+    gsap.set(noBtn, { clearProps: "all" });
+    
+    qText.innerText = current.question;
+    memeImg.src = current.meme;
+    yesBtn.innerText = current.yesText;
+    noBtn.innerText = current.noText;
+    
+    // Update progress
+    progressFill.style.width = ((step + 1) / flow.length) * 100 + "%";
+}
+
+function handleYes() {
+    spawnBurst();
+    step++;
+
+    if(step < flow.length) {
+        gsap.to(["#question", "#memeBox", "#yesBtn", "#noBtn"], {
+            opacity: 0,
+            scale: 0.9,
+            duration: 0.2,
+            onComplete: () => {
+                updateContent();
+                gsap.to(["#question", "#memeBox", "#yesBtn", "#noBtn"], { 
+                    opacity: 1, 
+                    scale: 1, 
+                    duration: 0.4, 
+                    ease: "back.out" 
+                });
+            }
+        });
+    } else {
+        finishAction();
     }
-    setInterval(() => createSparkle(false), 600);
+}
+
+function moveNo() {
+    const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - 40) + 20;
+    const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 40) + 20;
+    gsap.to(noBtn, { position: "fixed", left: x, top: y, duration: 0.3 });
+    
+    yesScale += 0.18;
+    gsap.to(yesBtn, { scale: yesScale, duration: 0.3, ease: "back.out(2)" });
+}
+
+function finishAction() {
+    confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#0ea5e9', '#38bdf8', '#ffffff']
+    });
+
+    gsap.to("#controls, .progress-bar", { opacity: 0, duration: 0.5 });
+    
+    qText.innerHTML = "Opening your <br>surprise now... 💌";
+    memeImg.src = finalMeme;
+    
+    setTimeout(() => {
+        gsap.to("body", { 
+            opacity: 0, 
+            duration: 1.2, 
+            onComplete: () => {
+                window.location.href = "letter.html"; 
+            }
+        });
+    }, 3000);
+}
+
+function spawnBurst() {
+    const icons = ['💖', '✨', '💙'];
+    for(let i = 0; i < 10; i++) {
+        const h = document.createElement("div");
+        h.className = "floating-heart";
+        h.innerText = icons[Math.floor(Math.random() * icons.length)];
+        document.body.appendChild(h);
+
+        const rect = yesBtn.getBoundingClientRect();
+        gsap.set(h, { x: rect.left + rect.width/2, y: rect.top });
+
+        gsap.to(h, {
+            x: "+=" + (Math.random() - 0.5) * 400,
+            y: "-=" + (Math.random() * 300 + 100),
+            opacity: 0,
+            rotation: Math.random() * 360,
+            duration: 1.5,
+            onComplete: () => h.remove()
+        });
+    }
+}
+
+noBtn.addEventListener("mouseover", moveNo);
+noBtn.addEventListener("touchstart", (e) => { e.preventDefault(); moveNo(); });
+
+window.onload = () => {
+    const loader = document.getElementById('loading-screen');
+    const card = document.getElementById('mainCard');
+    
+    // Initialize first question
+    updateContent();
+
+    setTimeout(() => {
+        loader.style.opacity = '0';
+        setTimeout(() => {
+            loader.style.display = 'none';
+            gsap.to(card, { opacity: 1, y: 0, duration: 1, ease: "power3.out" });
+        }, 1000);
+    }, 3000);
+};
   </script>
 </body>
 
